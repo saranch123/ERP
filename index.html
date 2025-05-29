@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ERP Chatbot – Teacher</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef1f7;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    #chat {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      margin-bottom: 15px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .user {
+      color: #2980b9;
+      margin-top: 10px;
+    }
+
+    .bot {
+      color: #27ae60;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 60px;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #1c5980;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🎓 ERP Chatbot (Teacher Mode)</h2>
+
+    <div id="chat"></div>
+
+    <textarea id="input" placeholder="Ask a question like 'Show me the grades of all students'"></textarea>
+    <button onclick="send()">Send</button>
+  </div>
+
+  <script>
+    const uid = "6HC1c7oe0CSe03T20hvK5abHWjn2"; // Teacher UID
+    const role = "teacher"; // Role is teacher
+
+    async function send() {
+      const input = document.getElementById("input").value;
+      if (!input.trim()) return;
+
+      // Show user message
+      document.getElementById("chat").innerHTML += `<div class="user"><strong>You:</strong> ${input}</div>`;
+      document.getElementById("input").value = "";
+
+      // Fetch response
+      const response = await fetch('http://localhost:3000/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid, role, message: input })
+      });
+
+      const data = await response.json();
+      document.getElementById("chat").innerHTML += `<div class="bot"><strong>AI:</strong> ${data.reply}</div>`;
+
+      // Auto-scroll
+      const chat = document.getElementById("chat");
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>
